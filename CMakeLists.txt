@@ -1,0 +1,11 @@
+set(SOURCE
+   ${SOURCE}
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/tglm.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/game.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/shader.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/texture2d.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/arrayrenderer.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/elementrenderer.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/resourcemanager.c
+   PARENT_SCOPE
+)
