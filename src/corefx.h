@@ -1,7 +1,7 @@
 #pragma once
 
 // clang-format off
-#include "../corefw/corefw.h"       // IWYU pragma: keep
+#include <corefw.h>       // IWYU pragma: keep
 #include "rect.h"                   // IWYU pragma: keep
 #include "game.h"                   // IWYU pragma: keep
 #include "resourcemanager.h"        // IWYU pragma: keep

@@ -1,5 +1,5 @@
 #pragma once
-#include "../corefw/corefw.h"       // IWYU pragma: keep
+#include <corefw.h>       // IWYU pragma: keep
 #include "corefx.h"                 // IWYU pragma: keep
 #include "shader.h"
 #include "texture2d.h"
@@ -17,26 +17,26 @@ typedef struct __CFXResourceManager {
     CFMapRef Fonts;
 } __CFXResourceManager;
 
-extern method void* Ctor(
+extern proc void* Ctor(
     CFXResourceManagerRef this);
 
-extern method CFXShaderRef LoadShader(
+extern proc CFXShaderRef LoadShader(
     const CFXResourceManagerRef this,
     const GLchar* vShaderFile,
     const GLchar* fShaderFile,
     const char* name);
 
-extern method CFXShaderRef GetShader(
+extern proc CFXShaderRef GetShader(
     const CFXResourceManagerRef this,
     const char* name);
 
-extern method CFXTexture2DRef LoadTexture(
+extern proc CFXTexture2DRef LoadTexture(
     const CFXResourceManagerRef this,
     const GLchar* file,
     GLboolean alpha,
     const char* name);
 
-extern method CFXTexture2DRef GetTexture(
+extern proc CFXTexture2DRef GetTexture(
     const CFXResourceManagerRef this,
     const char* name);
 

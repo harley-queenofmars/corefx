@@ -1,7 +1,7 @@
 #include <emscripten.h>
 #define GL_GLEXT_PROTOTYPES
 #define EGL_EGLEXT_PROTOTYPES
-#include "../corefw/corefw.h"   // IWYU pragma: keep
+#include <corefw.h>   // IWYU pragma: keep
 #include "corefx.h"             // IWYU pragma: keep
 #include <GLFW/glfw3.h>
 #include "arrayrenderer.h"
@@ -14,7 +14,7 @@ class2(CFXArrayRenderer, dtor);
  * @param shader to use for rendering
  * 
  */
- method void* Ctor(CFXArrayRendererRef this, CFXShaderRef shader)
+ proc void* Ctor(CFXArrayRendererRef this, CFXShaderRef shader)
 {
     this->shader = shader;
     CFXArrayRenderer->dtor = &dtor;
@@ -66,7 +66,7 @@ static void dtor(void* self)
  * @param color to tint
  * 
  */
-method void Draw(
+proc void Draw(
     CFXArrayRendererRef this,
     CFXTexture2DRef texture,
     CFXRect* bounds,
@@ -114,7 +114,7 @@ method void Draw(
  * @param color to tint
  * 
  */
-method void Draw(
+proc void Draw(
     CFXArrayRendererRef this,
     CFXTexture2DRef texture,
     Vec2 position, 

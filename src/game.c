@@ -7,7 +7,7 @@
 #define GL_GLEXT_PROTOTYPES
 #define EGL_EGLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
-#include "../corefw/corefw.h"   // IWYU pragma: keep
+#include <corefw.h>   // IWYU pragma: keep
 #include "corefx.h"             // IWYU pragma: keep
 
 class(CFXGame);
@@ -61,7 +61,7 @@ static uint64_t GetTicks()
     return ((ts * 1000000L) + us) * 10;
 }
 
-method void* Ctor(CFXGameRef this, char* cstr, int width, int height, void* subclass, CFXGameVtblRef vptr)
+proc void* Ctor(CFXGameRef this, char* cstr, int width, int height, void* subclass, CFXGameVtblRef vptr)
 {
     this->subclass = subclass;
     this->virtual = vptr;
@@ -135,14 +135,14 @@ method void* Ctor(CFXGameRef this, char* cstr, int width, int height, void* subc
     return this;
 }
 
-method char* ToString(CFXGameRef this)
+proc char* ToString(CFXGameRef this)
 {
     return this->title;
 }
 /**
  * CFXGame::Start
  */
-method void Start(CFXGameRef const this)
+proc void Start(CFXGameRef const this)
 {
     this->isRunning = true;
 }
@@ -150,7 +150,7 @@ method void Start(CFXGameRef const this)
 /**
  * CFXGame::HandleEvents
  */
-method void HandleEvents(CFXGameRef const this)
+proc void HandleEvents(CFXGameRef const this)
 {
     if (glfwGetKey(this->window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(this->window, true);
@@ -162,7 +162,7 @@ method void HandleEvents(CFXGameRef const this)
 /**
  * CFXGame::Tick
  */
-method void Tick(CFXGameRef const this)
+proc void Tick(CFXGameRef const this)
 {
     while (true) {
         // Advance the accumulated elapsed time.
@@ -254,7 +254,7 @@ method void Tick(CFXGameRef const this)
 /**
  * CFXGame::RunLoop
  */
-method void RunLoop(CFXGameRef const this)
+proc void RunLoop(CFXGameRef const this)
 {
     HandleEvents(this);
     // if (this->keys[SDLK_ESCAPE]) {
@@ -266,7 +266,7 @@ method void RunLoop(CFXGameRef const this)
 /**
  * CFXGame::Run
  */
-method void Run(CFXGameRef const this)
+proc void Run(CFXGameRef const this)
 {
     Initialize(this);
     LoadContent(this);

@@ -5,7 +5,7 @@
 #define EGL_EGLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "../corefw/corefw.h"       // IWYU pragma: keep
+#include <corefw.h>       // IWYU pragma: keep
 #include "corefx.h"                 // IWYU pragma: keep
 #include "shader.h"
 #include "texture2d.h"
@@ -57,7 +57,7 @@ void Init(CFXResourceManagerRef this)
     this->Shaders = CFNew(CFMap, nullptr);
     this->Textures = CFNew(CFMap, nullptr);
 }
-method void* Ctor(CFXResourceManagerRef this)
+proc void* Ctor(CFXResourceManagerRef this)
 {
     Init(this);
     return this;
@@ -70,7 +70,7 @@ method void* Ctor(CFXResourceManagerRef this)
  * @param name to cache as
  * @returns loaded, compiled and linked shader program
  */
-method CFXShaderRef LoadShader(
+proc CFXShaderRef LoadShader(
     const CFXResourceManagerRef this,
     const GLchar* vShaderFile,
     const GLchar* fShaderFile,
@@ -89,7 +89,7 @@ method CFXShaderRef LoadShader(
  * @returns loaded, compiled and linked shader program
  * 
  */
-method CFXShaderRef GetShader(
+proc CFXShaderRef GetShader(
     const CFXResourceManagerRef this,
     const char* name)
 {
@@ -105,7 +105,7 @@ method CFXShaderRef GetShader(
  * @returns Texture
  * 
  */
-method CFXTexture2DRef LoadTexture(
+proc CFXTexture2DRef LoadTexture(
     const CFXResourceManagerRef this,
     const GLchar* file,
     GLboolean alpha,
@@ -122,7 +122,7 @@ method CFXTexture2DRef LoadTexture(
  * @returns Texture
  * 
  */
-method CFXTexture2DRef GetTexture(
+proc CFXTexture2DRef GetTexture(
     const CFXResourceManagerRef this,
     const char* name)
 {

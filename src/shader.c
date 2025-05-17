@@ -4,13 +4,13 @@
 #include <emscripten.h>
 #define GL_GLEXT_PROTOTYPES
 #define EGL_EGLEXT_PROTOTYPES
-#include "../corefw/corefw.h"       // IWYU pragma: keep
+#include <corefw.h>       // IWYU pragma: keep
 #include "corefx.h"                 // IWYU pragma: keep
 #include <GLFW/glfw3.h>
 
 class(CFXShader);
 
-method void* Ctor(CFXShaderRef this, CFStringRef vShader, CFStringRef fShader)
+proc void* Ctor(CFXShaderRef this, CFStringRef vShader, CFStringRef fShader)
 {
     Compile(this, CFStringC(vShader), CFStringC(fShader));
     return this;
@@ -18,7 +18,7 @@ method void* Ctor(CFXShaderRef this, CFStringRef vShader, CFStringRef fShader)
 /**
  * Use shader
  */
-method CFXShaderRef Use(CFXShaderRef this)
+proc CFXShaderRef Use(CFXShaderRef this)
 {
     glUseProgram(this->Id);
     return this;
@@ -60,7 +60,7 @@ void CheckCompileErrors(
  * @param fragmentSource fragment shader source code
  * 
  */
-method void Compile(
+proc void Compile(
     CFXShaderRef this,
     const GLchar* vShaderSrc,
     const GLchar* fShaderSrc)
@@ -88,7 +88,7 @@ method void Compile(
     glDeleteShader(sFragment);
 }
 
-method void SetFloat(
+proc void SetFloat(
     CFXShaderRef this,
     const GLchar* name,
     const GLfloat value,
@@ -99,7 +99,7 @@ method void SetFloat(
     glUniform1f(glGetUniformLocation(this->Id, name), value);
 }
 
-method void SetFloat(
+proc void SetFloat(
     CFXShaderRef this,
     const GLchar* name,
     const GLfloat value)
@@ -107,7 +107,7 @@ method void SetFloat(
     SetFloat(this, name, value, true);
 }
 
-method void SetInteger(
+proc void SetInteger(
     CFXShaderRef this,
     const GLchar* name,
     GLint value,
@@ -118,7 +118,7 @@ method void SetInteger(
     glUniform1i(glGetUniformLocation(this->Id, name), value);
 }
 
-method void SetInteger(
+proc void SetInteger(
     CFXShaderRef this,
     const GLchar* name,
     GLint value)
@@ -126,7 +126,7 @@ method void SetInteger(
     SetInteger(this, name, value, true);
 }
 
-method void SetVector2(
+proc void SetVector2(
     CFXShaderRef this,
     const GLchar* name,
     GLfloat x,
@@ -138,7 +138,7 @@ method void SetVector2(
     glUniform2f(glGetUniformLocation(this->Id, name), x, y);
 }
 
-method void SetVector2(
+proc void SetVector2(
     CFXShaderRef this,
     const GLchar* name,
     GLfloat x,
@@ -147,7 +147,7 @@ method void SetVector2(
     SetVector2(this, name, x, y, true);
 }
 
-method void SetVector2v(
+proc void SetVector2v(
     CFXShaderRef this,
     const GLchar* name,
     const Vec2* vector,
@@ -158,7 +158,7 @@ method void SetVector2v(
     glUniform2fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-method void SetVector2v(
+proc void SetVector2v(
     CFXShaderRef this,
     const GLchar* name,
     const Vec2* vector)
@@ -166,7 +166,7 @@ method void SetVector2v(
     SetVector2v(this, name, vector, true);
 }
 
-method void SetVector3(
+proc void SetVector3(
     CFXShaderRef this,
     const GLchar* name,
     GLfloat x,
@@ -179,7 +179,7 @@ method void SetVector3(
     glUniform3f(glGetUniformLocation(this->Id, name), x, y, z);
 }
 
-method void SetVector3(
+proc void SetVector3(
     CFXShaderRef this,
     const GLchar* name,
     GLfloat x,
@@ -189,7 +189,7 @@ method void SetVector3(
     SetVector3(this, name, x, y, z, true);
 }
 
-method void SetVector3v(
+proc void SetVector3v(
     CFXShaderRef this,
     const GLchar* name,
     const Vec3* vector,
@@ -200,7 +200,7 @@ method void SetVector3v(
     glUniform3fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-method void SetVector3v(
+proc void SetVector3v(
     CFXShaderRef this,
     const GLchar* name,
     const Vec3* vector)
@@ -208,7 +208,7 @@ method void SetVector3v(
     SetVector3v(this, name, vector, true);
 }
 
-method void SetVector4(
+proc void SetVector4(
     CFXShaderRef this,
     const GLchar* name,
     GLfloat x,
@@ -222,7 +222,7 @@ method void SetVector4(
     glUniform4f(glGetUniformLocation(this->Id, name), x, y, z, w);
 }
 
-method void SetVector4(
+proc void SetVector4(
     CFXShaderRef this,
     const GLchar* name,
     GLfloat x,
@@ -233,7 +233,7 @@ method void SetVector4(
     SetVector4(this, name, x, y, z, w, true);
 }
 
-method void SetVector4v(
+proc void SetVector4v(
     CFXShaderRef this,
     const GLchar* name,
     const Vec4* vector,
@@ -244,7 +244,7 @@ method void SetVector4v(
     glUniform4fv(glGetUniformLocation(this->Id, name), 1, (GLfloat*)vector);
 }
 
-method void SetVector4v(
+proc void SetVector4v(
     CFXShaderRef this,
     const GLchar* name,
     const Vec4* vector)
@@ -252,7 +252,7 @@ method void SetVector4v(
     SetVector4v(this, name, vector, true);
 }
 
-method void SetMatrix(
+proc void SetMatrix(
     CFXShaderRef this,
     const GLchar* name,
     const Mat* matrix,
@@ -263,7 +263,7 @@ method void SetMatrix(
     glUniformMatrix4fv(glGetUniformLocation(this->Id, name), 1, GL_FALSE, (GLfloat*)matrix);
 }
 
-method void SetMatrix(
+proc void SetMatrix(
     CFXShaderRef this,
     const GLchar* name,
     const Mat* matrix)

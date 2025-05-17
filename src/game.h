@@ -4,7 +4,7 @@
 #define GL_GLEXT_PROTOTYPES
 #define EGL_EGLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
-#include "../corefw/corefw.h"   // IWYU pragma: keep
+#include <corefw.h>   // IWYU pragma: keep
 
 extern CFClassRef CFXGame;
 
@@ -61,7 +61,7 @@ typedef struct __CFXGame {
 } __CFXGame;
 
 
-extern method void* Ctor(
+extern proc void* Ctor(
     CFXGameRef this, 
     char* cstr, 
     int width, 
@@ -69,22 +69,22 @@ extern method void* Ctor(
     void* subclass, 
     CFXGameVtblRef vptr);
 
-extern method void HandleEvents(
+extern proc void HandleEvents(
     CFXGameRef const this);
 
-extern method char* ToString(
+extern proc char* ToString(
     CFXGameRef this);
 
-extern method void Start(
+extern proc void Start(
     CFXGameRef const this);
 
-extern method void Tick(
+extern proc void Tick(
     CFXGameRef const this);
 
-extern method void RunLoop(
+extern proc void RunLoop(
     CFXGameRef const this);
 
-extern method void Run(
+extern proc void Run(
     CFXGameRef const this);
 
 static inline CFXGameRef NewCFXGame(char* cstr, int width, int height, void* subclass, CFXGameVtblRef vptr)
@@ -101,7 +101,7 @@ static inline CFXGameRef NewCFXGame(char* cstr, int width, int height, void* sub
 /**
  * CFXGame::Draw
  */
-static inline method void Draw(CFXGameRef const this)
+static inline proc void Draw(CFXGameRef const this)
 {
     this->virtual->Draw(this->subclass);
 }
@@ -109,7 +109,7 @@ static inline method void Draw(CFXGameRef const this)
 /**
  * CFXGame::LoadContent
  */
-static inline method void LoadContent(CFXGameRef const this)
+static inline proc void LoadContent(CFXGameRef const this)
 {
     this->virtual->LoadContent(this->subclass);
 }
@@ -117,7 +117,7 @@ static inline method void LoadContent(CFXGameRef const this)
 /**
  * CFXGame::Initialize
  */
-static inline method void Initialize(CFXGameRef const this)
+static inline proc void Initialize(CFXGameRef const this)
 {
     this->virtual->Initialize(this->subclass);
 }
@@ -125,7 +125,7 @@ static inline method void Initialize(CFXGameRef const this)
 /**
  * CFXGame::Update
  */
-static inline method void Update(CFXGameRef const this)
+static inline proc void Update(CFXGameRef const this)
 {
     this->virtual->Update(this->subclass);
 }

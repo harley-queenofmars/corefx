@@ -2,7 +2,7 @@
 #define GL_GLEXT_PROTOTYPES
 #define EGL_EGLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
-#include "../corefw/corefw.h"   // IWYU pragma: keep
+#include <corefw.h>   // IWYU pragma: keep
 #include "corefx.h"             // IWYU pragma: keep
 #include "elementrenderer.h"
 
@@ -14,7 +14,7 @@ class2(CFXElementRenderer, dtor);
  * @param shader to use for rendering
  * 
  */
- method void* Ctor(CFXElementRendererRef this, CFXShaderRef shader)
+ proc void* Ctor(CFXElementRendererRef this, CFXShaderRef shader)
 {
     CFXElementRenderer->dtor = dtor;
     this->shader = shader;
@@ -74,7 +74,7 @@ static void dtor(void* self)
  * @param color to tint
  * 
  */
-method void Draw(
+proc void Draw(
     CFXElementRendererRef this,
     CFXTexture2DRef texture,
     CFXRect bounds,
@@ -107,7 +107,7 @@ method void Draw(
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-method void Draw(
+proc void Draw(
     CFXElementRendererRef this,
     CFXTexture2DRef texture,
     Vec2 position, 

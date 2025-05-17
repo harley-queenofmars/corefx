@@ -3,7 +3,7 @@
 #define GL_GLEXT_PROTOTYPES
 #define EGL_EGLEXT_PROTOTYPES
 #include <GLFW/glfw3.h>
-#include "../corefw/corefw.h"       // IWYU pragma: keep
+#include <corefw.h>       // IWYU pragma: keep
 #include "corefx.h"                 // IWYU pragma: keep
 #include "rect.h"
 #include "texture2d.h"
@@ -22,18 +22,18 @@ typedef struct __CFXElementRenderer {
     GLuint EBO;
 } __CFXElementRenderer;
 
-extern method void* Ctor(
+extern proc void* Ctor(
     CFXElementRendererRef this, 
     CFXShaderRef shader);
 
-extern method void Draw(
+extern proc void Draw(
     CFXElementRendererRef this, 
     CFXTexture2DRef texture, 
     CFXRect bounds, 
     GLfloat rotate, 
     Vec3 color);
 
-extern method void Draw(
+extern proc void Draw(
     CFXElementRendererRef this, 
     CFXTexture2DRef texture, 
     Vec2 position, 

@@ -1,7 +1,7 @@
 #include <emscripten.h>
 #define GL_GLEXT_PROTOTYPES
 #define EGL_EGLEXT_PROTOTYPES
-#include "../corefw/corefw.h"    // IWYU pragma: keep
+#include <corefw.h>    // IWYU pragma: keep
 #include "stb_image.h"
 #include <GLFW/glfw3.h>
 #include "texture2d.h"
@@ -15,7 +15,7 @@ class(CFXTexture2D);
  * @param imageFormat
  * @param path to image
  */
-method void* Ctor(CFXTexture2DRef this, GLuint internalFormat, GLuint imageFormat, char* path)
+proc void* Ctor(CFXTexture2DRef this, GLuint internalFormat, GLuint imageFormat, char* path)
 {
     // CFXTexture2DRef this = CFNew((CFClassRef)CFXTexture2D);
     this->path = CFStrDup(path);
@@ -39,7 +39,7 @@ method void* Ctor(CFXTexture2DRef this, GLuint internalFormat, GLuint imageForma
  * @param data bitmap data
  * 
  */
-method void Generate(
+proc void Generate(
     CFXTexture2DRef this,
     GLuint width,
     GLuint height,
@@ -64,12 +64,12 @@ method void Generate(
  * 
  * binds the texture to GL
  */
-method void Bind(const CFXTexture2DRef this)
+proc void Bind(const CFXTexture2DRef this)
 {
     glBindTexture(GL_TEXTURE_2D, this->Id);
 }
 
-method char* ToString(const CFXTexture2DRef this)
+proc char* ToString(const CFXTexture2DRef this)
 {
     char* s = calloc(1024, 1);
     return s;
