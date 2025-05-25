@@ -6,7 +6,7 @@
 #include "corefx.h"             // IWYU pragma: keep
 #include "elementrenderer.h"
 
-class2(CFXElementRenderer, dtor);
+class2(CFXElementRenderer);
 
 /**
  * ElementRenderer

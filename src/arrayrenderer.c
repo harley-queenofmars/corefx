@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include "arrayrenderer.h"
 
-class2(CFXArrayRenderer, dtor);
+class2(CFXArrayRenderer);
 
 /**
  * ArrayRenderer

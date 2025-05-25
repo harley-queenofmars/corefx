@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
  
-class2(CFXResourceManager, dtor);
+class2(CFXResourceManager);
 
 void Init(CFXResourceManagerRef this);
 
