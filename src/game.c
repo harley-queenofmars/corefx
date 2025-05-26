@@ -12,6 +12,22 @@
 
 class(CFXGame);
 
+constexpr float TicksPerMillisecond = 10000.0f;
+constexpr float MillisecondsPerTick = 1.0f / (TicksPerMillisecond);
+constexpr float TicksPerSecond = TicksPerMillisecond * 1000.0f; // 10,000,000
+constexpr float SecondsPerTick = 1.0f / (TicksPerSecond); // 0.0001
+
+CFXGameRef CFXGame_instance;
+
+/**
+ * @brief Destructor function for the CFXGame object.
+ *
+ * This function releases resources associated with the CFXGame instance.
+ * It frees dynamically allocated memory for the title and keys fields,
+ * and terminates the GLFW library.
+ *
+ * @param self Pointer to the CFXGame instance to be destroyed.
+ */
 static void dtor(void* self)
 {
     CFXGameRef this = self;
@@ -21,13 +37,21 @@ static void dtor(void* self)
     glfwTerminate();
 }
 
-constexpr float TicksPerMillisecond = 10000.0f;
-constexpr float MillisecondsPerTick = 1.0f / (TicksPerMillisecond);
-constexpr float TicksPerSecond = TicksPerMillisecond * 1000.0f; // 10,000,000
-constexpr float SecondsPerTick = 1.0f / (TicksPerSecond); // 0.0001
-
-CFXGameRef CFXGame_instance;
-
+/**
+ * @brief GLFW key callback function for handling keyboard input in the game.
+ *
+ * This function is called whenever a key event occurs in the GLFW window.
+ * - If the Escape key is pressed, it sets the window's "should close" flag to true, signaling the application to close.
+ * - For all valid key codes (0 to 1023), it updates the corresponding entry in the game's key state array:
+ *   - Sets the key state to true on key press.
+ *   - Sets the key state to false on key release.
+ *
+ * @param window    Pointer to the GLFW window receiving the event.
+ * @param key       The keyboard key that was pressed or released.
+ * @param scancode  The system-specific scancode of the key.
+ * @param action    GLFW_PRESS, GLFW_RELEASE, or GLFW_REPEAT.
+ * @param mode      Bit field describing which modifier keys were held down.
+ */
 void CFXGame_key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
     // When a user presses the escape key,
@@ -44,13 +68,32 @@ void CFXGame_key_callback(GLFWwindow* window, int key, int scancode, int action,
 
 
 
+/**
+ * @brief Callback function to handle changes in the framebuffer size.
+ *
+ * This function is called whenever the window's framebuffer is resized,
+ * such as when the window is resized by the user or when moving between
+ * displays with different pixel densities (e.g., Retina displays).
+ * It updates the OpenGL viewport to match the new framebuffer dimensions,
+ * ensuring that rendering covers the entire window.
+ *
+ * @param window Pointer to the GLFW window whose framebuffer was resized.
+ * @param width  The new width, in pixels, of the framebuffer.
+ * @param height The new height, in pixels, of the framebuffer.
+ */
 void CFXGame_framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
 }
 
+/**
+ * @brief Retrieves the current time in 100-nanosecond ticks since the Unix epoch.
+ *
+ * This function uses gettimeofday to obtain the current time with microsecond precision,
+ * then converts the result to 100-nanosecond intervals (ticks).
+ *
+ * @return The current time as a 64-bit unsigned integer representing the number of 100-nanosecond ticks.
+ */
 static uint64_t GetTicks()
 {
     struct timeval t;
@@ -61,6 +104,21 @@ static uint64_t GetTicks()
     return ((ts * 1000000L) + us) * 10;
 }
 
+/**
+ * @brief Constructor for the CFXGame object.
+ *
+ * Initializes the CFXGame structure with the provided parameters, sets up the GLFW window,
+ * configures OpenGL context, and registers input callbacks for both keyboard and touch controls.
+ * Also initializes various game state fields and random seed.
+ *
+ * @param this         Pointer to the CFXGame object to initialize.
+ * @param cstr         Title string for the game window.
+ * @param width        Width of the game window.
+ * @param height       Height of the game window.
+ * @param subclass     Pointer to a subclass or user data.
+ * @param vptr         Pointer to the virtual function table for the game.
+ * @return             Pointer to the initialized CFXGame object.
+ */
 proc void* Ctor(CFXGameRef this, char* cstr, int width, int height, void* subclass, CFXGameVtblRef vptr)
 {
     this->subclass = subclass;
@@ -135,12 +193,21 @@ proc void* Ctor(CFXGameRef this, char* cstr, int width, int height, void* subcla
     return this;
 }
 
+/**
+ * Converts the given CFXGameRef object to its string representation.
+ *
+ * @param this A reference to the CFXGame object.
+ * @return The title of the game as a string.
+ */
 proc char* ToString(CFXGameRef this)
 {
     return this->title;
 }
+
 /**
- * CFXGame::Start
+ * @brief Starts the game by setting the isRunning flag to true.
+ *
+ * @param this A reference to the CFXGame instance to start.
  */
 proc void Start(CFXGameRef const this)
 {
@@ -148,7 +215,12 @@ proc void Start(CFXGameRef const this)
 }
 
 /**
- * CFXGame::HandleEvents
+ * @brief Handles input events for the game, specifically checking for the Escape key.
+ *
+ * This function checks if the Escape key is pressed. If it is, it sets the window
+ * to close and updates the game's exit flag accordingly.
+ *
+ * @param this A reference to the game instance containing the window and state.
  */
 proc void HandleEvents(CFXGameRef const this)
 {
@@ -160,7 +232,24 @@ proc void HandleEvents(CFXGameRef const this)
 }
 
 /**
- * CFXGame::Tick
+ * @brief Advances the game simulation by one tick, handling both fixed and variable timestep updates.
+ *
+ * This function manages the main game loop tick, updating the game's timing state and invoking
+ * update and draw routines as appropriate. It supports both fixed timestep and variable timestep
+ * modes, ensuring consistent game logic updates and smooth rendering.
+ *
+ * The function performs the following tasks:
+ * - Calculates the elapsed time since the last tick and accumulates it.
+ * - In fixed timestep mode, sleeps if not enough time has passed to perform an update, to save CPU.
+ * - Limits the maximum accumulated elapsed time to prevent spiral of death.
+ * - In fixed timestep mode, performs as many fixed-length updates as possible, tracking lag and
+ *   adjusting the isRunningSlowly flag if the game falls behind.
+ * - In variable timestep mode, performs a single update with the accumulated elapsed time.
+ * - Calls the Update() function to advance game logic.
+ * - Calls the Draw() function unless drawing is suppressed.
+ * - Checks for exit conditions and updates the running state accordingly.
+ *
+ * @param this Pointer to the game object (CFXGameRef) whose state is to be updated.
  */
 proc void Tick(CFXGameRef const this)
 {
@@ -252,19 +341,13 @@ proc void Tick(CFXGameRef const this)
 }
 
 /**
- * CFXGame::RunLoop
- */
-proc void RunLoop(CFXGameRef const this)
-{
-    HandleEvents(this);
-    // if (this->keys[SDLK_ESCAPE]) {
-    //     this->shouldExit = true;
-    // }
-    Tick(this);
-}
-
-/**
- * CFXGame::Run
+ * @brief Runs the main game loop for the specified game instance.
+ *
+ * This function initializes the game, loads necessary content, and starts the game.
+ * It then sets up the main loop using Emscripten, repeatedly calling the RunLoop
+ * function with the game instance as its argument.
+ *
+ * @param this A reference to the game instance (CFXGameRef) to run.
  */
 proc void Run(CFXGameRef const this)
 {
@@ -280,12 +363,41 @@ proc void Run(CFXGameRef const this)
 #endif
 }
 
+/**
+ * @brief Runs the main game loop for the specified game instance.
+ *
+ * This function processes input events and updates the game state
+ * by calling HandleEvents() and Tick() in sequence.
+ *
+ * @param this A constant reference to the game instance (CFXGameRef).
+ */
+proc void RunLoop(CFXGameRef const this)
+{
+    HandleEvents(this);
+    Tick(this);
+}
+
+
 ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 ///// gamepad events
 ////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////// 
 
+
+
+/**
+ * @brief Handles the "up" direction press event from a D-pad input.
+ *
+ * This function is intended to be used as an event handler for mouse or touch events
+ * that simulate pressing the "up" direction on a D-pad. When triggered, it sets the
+ * "up" key state to true and the "down" key state to false in the game's key state array.
+ *
+ * @param eventType The type of the event (e.g., mouse down, mouse up).
+ * @param mouseEvent Pointer to the EmscriptenMouseEvent structure containing event data.
+ * @param userData Pointer to the CFXGameRef game state structure.
+ * @return EM_TRUE to indicate the event was handled.
+ */
 bool onclick_handler_dpad_up(int eventType, const EmscriptenMouseEvent *mouseEvent, void *userData)
 {
     CFXGameRef this = userData;
@@ -326,6 +438,17 @@ bool onclick_handler_button_a(int eventType, const EmscriptenMouseEvent *mouseEv
 }
 
 
+/**
+ * @brief Handles touch start events for the D-pad up control.
+ *
+ * This function is called when a touch start event is detected on the D-pad up control.
+ * It sets the "up" key state to true and the "down" key state to false in the game's key array.
+ *
+ * @param eventType The type of the touch event.
+ * @param touchEvent Pointer to the EmscriptenTouchEvent structure containing event data.
+ * @param userData Pointer to user data, expected to be a CFXGameRef instance.
+ * @return EM_TRUE to indicate the event was handled.
+ */
 bool touchstart_handler_dpad_up(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData)
 {
     CFXGameRef this = userData;
@@ -366,6 +489,19 @@ bool touchstart_handler_button_a(int eventType, const EmscriptenTouchEvent *touc
 }
 
 
+/**
+ * @brief Handles the end of a touch event for the D-pad up control.
+ *
+ * This function is called when a touch event ends (e.g., the user lifts their finger)
+ * on the D-pad up control. It updates the game's key state by setting both the
+ * GLFW_KEY_UP and GLFW_KEY_DOWN keys to false, indicating that neither the up nor down
+ * direction is being pressed.
+ *
+ * @param eventType The type of the touch event.
+ * @param touchEvent Pointer to the EmscriptenTouchEvent structure containing event data.
+ * @param userData Pointer to user data, expected to be a CFXGameRef instance.
+ * @return EM_TRUE to indicate the event was handled.
+ */
 bool touchend_handler_dpad_up(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData)
 {
     CFXGameRef this = userData;
@@ -406,6 +542,18 @@ bool touchend_handler_button_a(int eventType, const EmscriptenTouchEvent *touchE
 }
 
 
+/**
+ * @brief Handles the touch cancel event for the D-pad up control.
+ *
+ * This function is called when a touch cancel event occurs on the D-pad up control.
+ * It resets the state of the up and down keys in the game's key array to false,
+ * indicating that neither the up nor down direction is being pressed.
+ *
+ * @param eventType The type of the touch event.
+ * @param touchEvent Pointer to the EmscriptenTouchEvent structure containing event data.
+ * @param userData Pointer to user data, expected to be a CFXGameRef instance.
+ * @return EM_TRUE to indicate the event was handled.
+ */
 bool touchcancel_handler_dpad_up(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData)
 {
     CFXGameRef this = userData;

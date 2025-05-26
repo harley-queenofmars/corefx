@@ -11,7 +11,16 @@ extern CFClassRef CFXShader;
 typedef struct __CFXShader* CFXShaderRef;
 
 /**
- *  class CFXShader
+ * @struct __CFXShader
+ * @brief Represents a shader object in the CoreFX graphics framework.
+ *
+ * This structure encapsulates a shader resource, including its CoreFX object
+ * header and the OpenGL shader identifier.
+ *
+ * @var __CFXShader::obj
+ *      The base CoreFX object, providing common object functionality.
+ * @var __CFXShader::Id
+ *      The OpenGL identifier for the shader object.
  */
 typedef struct __CFXShader {
     __CFObject obj;
@@ -140,6 +149,16 @@ extern proc void SetMatrix(
     const GLchar* name,
     const Mat* matrix);
 
+/**
+ * @brief Creates a new CFXShader object using the provided vertex and fragment shader sources.
+ *
+ * This function constructs a new shader object by calling the Ctor function with the specified
+ * vertex and fragment shader source strings.
+ *
+ * @param vShader The source code for the vertex shader as a CFStringRef.
+ * @param fShader The source code for the fragment shader as a CFStringRef.
+ * @return CFXShaderRef A reference to the newly created shader object.
+ */
 static inline CFXShaderRef NewCFXShader(CFStringRef vShader, CFStringRef fShader)
 {
     return Ctor((CFXShaderRef)CFCreate(CFXShader), vShader, fShader);

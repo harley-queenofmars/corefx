@@ -9,10 +9,23 @@
 class2(CFXArrayRenderer);
 
 /**
- * ArrayRenderer
- * 
- * @param shader to use for rendering
- * 
+ * @brief Constructor for the CFXArrayRenderer object.
+ *
+ * Initializes the array renderer by assigning the shader, setting the destructor,
+ * and configuring the vertex data and OpenGL buffers required for rendering.
+ *
+ * Steps performed:
+ * - Assigns the provided shader to the renderer instance.
+ * - Sets the destructor function pointer.
+ * - Defines vertex data for a quad with position and texture coordinates.
+ * - Generates and binds OpenGL Vertex Array Object (VAO) and Vertex Buffer Object (VBO).
+ * - Uploads vertex data to the GPU.
+ * - Configures vertex attribute pointers for shader input.
+ * - Unbinds the buffer and VAO to prevent accidental modification.
+ *
+ * @param this   Pointer to the CFXArrayRenderer instance to initialize.
+ * @param shader Reference to the shader to be used by the renderer.
+ * @return       Pointer to the initialized CFXArrayRenderer instance.
  */
  proc void* Ctor(CFXArrayRendererRef this, CFXShaderRef shader)
 {
@@ -46,7 +59,12 @@ class2(CFXArrayRenderer);
 }
 
 /**
- * destructor
+ * @brief Destructor for the CFXArrayRenderer object.
+ *
+ * Releases OpenGL resources associated with the renderer by deleting
+ * the Vertex Array Object (VAO) and Vertex Buffer Object (VBO).
+ *
+ * @param self Pointer to the CFXArrayRenderer instance to be destroyed.
  */
 static void dtor(void* self)
 {
@@ -55,16 +73,20 @@ static void dtor(void* self)
     glDeleteBuffers(1, &this->VBO);
 }
 
-
 /**
- * Draw
- * 
- * @param texture the image to render
- * @param position to render at
- * @param size to render
- * @param rotate amount to rotate by
- * @param color to tint
- * 
+ * @brief Draws a textured quad with specified transformations and color.
+ *
+ * This function prepares the transformation matrix for rendering a quad,
+ * applies translation, rotation (around the center), and scaling based on the
+ * provided bounds and rotation angle. It then sets the transformation matrix
+ * and color uniform in the shader, binds the texture, and renders the quad.
+ *
+ * @param this      Pointer to the array renderer instance.
+ * @param texture   Reference to the texture to be rendered.
+ * @param bounds    Pointer to a CFXRect structure specifying the position (x, y)
+ *                  and size (w, h) of the quad.
+ * @param rotate    Rotation angle in radians to apply to the quad.
+ * @param color     RGB color vector to modulate the sprite.
  */
 proc void Draw(
     CFXArrayRendererRef this,
@@ -104,15 +126,19 @@ proc void Draw(
     glBindVertexArray(0);
 }
 
+
 /**
- * Draw
- * 
- * @param texture the image to render
- * @param position to render at
- * @param size to render
- * @param rotate amount to rotate by
- * @param color to tint
- * 
+ * @brief Draws a textured quad at the specified position, size, rotation, and color.
+ *
+ * This function prepares the transformation matrix for the quad, sets shader uniforms,
+ * binds the appropriate texture, and renders the quad using OpenGL.
+ *
+ * @param this      Pointer to the array renderer instance.
+ * @param texture   Reference to the 2D texture to be drawn.
+ * @param position  The position (x, y) where the quad will be rendered.
+ * @param size      The size (width, height) of the quad.
+ * @param rotate    The rotation angle (in radians) to apply to the quad.
+ * @param color     The color (RGB) to tint the quad.
  */
 proc void Draw(
     CFXArrayRendererRef this,

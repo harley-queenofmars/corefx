@@ -9,12 +9,26 @@
 class2(CFXElementRenderer);
 
 /**
- * ElementRenderer
- * 
- * @param shader to use for rendering
- * 
+ * @brief Constructor for the CFXElementRenderer object.
+ *
+ * Initializes the CFXElementRenderer instance with the provided shader, sets up
+ * the destructor, and configures the necessary OpenGL buffers and vertex attributes
+ * for rendering a textured quad.
+ *
+ * The function performs the following steps:
+ * - Assigns the destructor function pointer.
+ * - Stores the shader reference.
+ * - Defines vertex and index data for a quad with position and texture coordinates.
+ * - Generates and binds OpenGL Vertex Array Object (VAO), Vertex Buffer Object (VBO),
+ *   and Element Buffer Object (EBO).
+ * - Uploads vertex and index data to the GPU.
+ * - Configures vertex attribute pointers for position and texture coordinates.
+ *
+ * @param this   Pointer to the CFXElementRenderer instance to initialize.
+ * @param shader Reference to the shader to be used by the renderer.
+ * @return       Pointer to the initialized CFXElementRenderer instance.
  */
- proc void* Ctor(CFXElementRendererRef this, CFXShaderRef shader)
+proc void* Ctor(CFXElementRendererRef this, CFXShaderRef shader)
 {
     CFXElementRenderer->dtor = dtor;
     this->shader = shader;
@@ -54,7 +68,13 @@ class2(CFXElementRenderer);
 }
 
 /**
- * destructor
+ * @brief Destructor for the CFXElementRenderer object.
+ *
+ * This function releases the OpenGL resources associated with the given
+ * CFXElementRenderer instance by deleting its Vertex Array Object (VAO),
+ * Vertex Buffer Object (VBO), and Element Buffer Object (EBO).
+ *
+ * @param self Pointer to the CFXElementRenderer instance to be destroyed.
  */
 static void dtor(void* self)
 {
@@ -65,14 +85,17 @@ static void dtor(void* self)
 }
 
 /**
- * Draw
- * 
- * @param texture the image to render
- * @param position to render at
- * @param size to render
- * @param rotate amount to rotate by
- * @param color to tint
- * 
+ * @brief Draws a textured quad with specified transformations and color.
+ *
+ * This function prepares the transformation matrix for rendering a 2D element (quad)
+ * by applying translation, rotation (around the center), and scaling, in that order.
+ * It then sets up the shader uniforms, binds the texture, and issues a draw call.
+ *
+ * @param this      Reference to the element renderer.
+ * @param texture   Reference to the 2D texture to be drawn.
+ * @param bounds    Rectangle specifying the position (x, y) and size (w, h) of the quad.
+ * @param rotate    Rotation angle in radians, applied around the center of the quad.
+ * @param color     RGB color vector to tint the sprite.
  */
 proc void Draw(
     CFXElementRendererRef this,
@@ -103,10 +126,24 @@ proc void Draw(
     SetVector3v(this->shader, "spriteColor", &color, true);
     glActiveTexture(GL_TEXTURE0);
     Bind(texture);
-    // CFXTexture2D_Bind(texture);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
+
+/**
+ * @brief Draws a textured quad (sprite) with specified transformations and color.
+ *
+ * This function prepares the transformation matrix for a 2D element, applying translation,
+ * rotation (around the center), and scaling in the correct order. It then sets up the shader,
+ * passes the transformation matrix and color, binds the texture, and issues a draw call.
+ *
+ * @param this      Reference to the element renderer.
+ * @param texture   Reference to the texture to be drawn.
+ * @param position  Position (x, y) where the quad will be drawn.
+ * @param size      Size (width, height) of the quad.
+ * @param rotate    Rotation angle (in radians) to apply to the quad.
+ * @param color     Color (RGB) to tint the sprite.
+ */
 proc void Draw(
     CFXElementRendererRef this,
     CFXTexture2DRef texture,
@@ -135,7 +172,6 @@ proc void Draw(
     SetVector3v(this->shader, "spriteColor", &color, true);
     glActiveTexture(GL_TEXTURE0);
     Bind(texture);
-    // CFXTexture2D_Bind(texture);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 

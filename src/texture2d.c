@@ -9,11 +9,17 @@
 class(CFXTexture2D);
 
 /**
- *  CFXTexture2D Constructor
- * 
- * @param internalFormat
- * @param imageFormat
- * @param path to image
+ * @brief Constructor for the CFXTexture2D object.
+ *
+ * Initializes a new 2D texture object with the specified internal and image formats,
+ * sets default texture parameters (wrapping and filtering), duplicates the provided path,
+ * and generates an OpenGL texture ID.
+ *
+ * @param this           Pointer to the CFXTexture2D object to initialize.
+ * @param internalFormat OpenGL internal format for the texture (e.g., GL_RGB, GL_RGBA).
+ * @param imageFormat    OpenGL image format for the texture data.
+ * @param path           File path to the texture image (will be duplicated and stored).
+ * @return               Pointer to the initialized CFXTexture2D object.
  */
 proc void* Ctor(CFXTexture2DRef this, GLuint internalFormat, GLuint imageFormat, char* path)
 {
@@ -32,12 +38,16 @@ proc void* Ctor(CFXTexture2DRef this, GLuint internalFormat, GLuint imageFormat,
 }
 
 /**
- * Generate
- * 
- * @param width of image to generate
- * @param height of image to generate
- * @param data bitmap data
- * 
+ * @brief Generates and configures a 2D texture object.
+ *
+ * This function initializes a 2D texture with the specified width, height, and pixel data.
+ * It binds the texture, uploads the image data to the GPU, and sets the texture's wrapping
+ * and filtering parameters according to the object's properties. Finally, it unbinds the texture.
+ *
+ * @param this   Reference to the texture object to be generated and configured.
+ * @param width  Width of the texture in pixels.
+ * @param height Height of the texture in pixels.
+ * @param data   Pointer to the image data to be uploaded to the texture.
  */
 proc void Generate(
     CFXTexture2DRef this,
@@ -59,11 +69,6 @@ proc void Generate(
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-/**
- * Bind
- * 
- * binds the texture to GL
- */
 proc void Bind(const CFXTexture2DRef this)
 {
     glBindTexture(GL_TEXTURE_2D, this->Id);

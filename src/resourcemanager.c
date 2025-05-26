@@ -13,8 +13,6 @@
 
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/stat.h>
  
 class2(CFXResourceManager);
@@ -30,6 +28,16 @@ CFXTexture2DRef LoadTextureFromFile(
     const GLchar* file,
     GLboolean alpha);
 
+/**
+ * @brief Destructor function for the CFXResourceManager object.
+ *
+ * This function releases all resources managed by the resource manager,
+ * including shaders and textures. It iterates through the internal maps
+ * of shaders and textures, unreferences each contained object if it matches
+ * the expected class type, and finally unreferences the maps themselves.
+ *
+ * @param self Pointer to the CFXResourceManager instance to be destroyed.
+ */
 static void dtor(void* self)
 {
     CFXResourceManagerRef this = self;
@@ -52,23 +60,46 @@ static void dtor(void* self)
     CFUnref(this->Textures);
 }
 
+/**
+ * @brief Initializes the resource manager by creating new maps for shaders and textures.
+ *
+ * This function allocates and assigns new CFMap instances to the Shaders and Textures
+ * members of the resource manager. These maps are intended to store shader and texture
+ * resources, respectively.
+ *
+ * @param this Pointer to the CFXResourceManagerRef instance to initialize.
+ */
 void Init(CFXResourceManagerRef this)
 {
     this->Shaders = CFNew(CFMap, nullptr);
     this->Textures = CFNew(CFMap, nullptr);
 }
+
+/**
+ * @brief Constructor for the CFXResourceManager object.
+ *
+ * Initializes the given CFXResourceManagerRef instance and returns it.
+ *
+ * @param this Pointer to the CFXResourceManagerRef instance to initialize.
+ * @return void* Pointer to the initialized CFXResourceManagerRef instance.
+ */
 proc void* Ctor(CFXResourceManagerRef this)
 {
     Init(this);
     return this;
 }
+
 /**
- * LoadShader
- * 
- * @param vShaderFile path to vertex shader
- * @param fShaderFile path to fragment shader
- * @param name to cache as
- * @returns loaded, compiled and linked shader program
+ * @brief Loads a shader from the specified vertex and fragment shader files and stores it in the resource manager.
+ *
+ * This function loads a shader using the provided vertex and fragment shader file paths,
+ * associates it with the given name in the resource manager's shader map, and returns a reference to the loaded shader.
+ *
+ * @param this         Reference to the resource manager.
+ * @param vShaderFile  Path to the vertex shader file.
+ * @param fShaderFile  Path to the fragment shader file.
+ * @param name         Name to associate with the loaded shader in the resource manager.
+ * @return             Reference to the loaded shader.
  */
 proc CFXShaderRef LoadShader(
     const CFXResourceManagerRef this,
@@ -83,11 +114,11 @@ proc CFXShaderRef LoadShader(
 }
 
 /**
- * GetShader
- * 
- * @param name to retrieve
- * @returns loaded, compiled and linked shader program
- * 
+ * Retrieves a shader resource by its name from the resource manager.
+ *
+ * @param this  A reference to the resource manager instance.
+ * @param name  The name of the shader to retrieve.
+ * @return      A reference to the shader if found; otherwise, NULL.
  */
 proc CFXShaderRef GetShader(
     const CFXResourceManagerRef this,
@@ -97,13 +128,13 @@ proc CFXShaderRef GetShader(
 }
 
 /**
- * loadTexture
- * 
- * @param file path to texture
- * @param alpha does the texture have an alpha channel?
- * @param name to cache as
- * @returns Texture
- * 
+ * Loads a texture from a file and stores it in the resource manager's texture map.
+ *
+ * @param this   Reference to the resource manager.
+ * @param file   Path to the texture file to load.
+ * @param alpha  Specifies whether the texture should include an alpha channel.
+ * @param name   Name to associate with the loaded texture in the texture map.
+ * @return       Reference to the loaded texture.
  */
 proc CFXTexture2DRef LoadTexture(
     const CFXResourceManagerRef this,
@@ -116,11 +147,11 @@ proc CFXTexture2DRef LoadTexture(
 }
 
 /**
- * GetTexture
- * 
- * @param name to retrieve
- * @returns Texture
- * 
+ * Retrieves a texture resource by its name from the resource manager.
+ *
+ * @param this Pointer to the resource manager instance.
+ * @param name The name of the texture to retrieve.
+ * @return A reference to the CFXTexture2D resource if found, otherwise NULL.
  */
 proc CFXTexture2DRef GetTexture(
     const CFXResourceManagerRef this,
@@ -129,23 +160,31 @@ proc CFXTexture2DRef GetTexture(
     return CFMapGetC(this->Textures, name);
 }
 
+/**
+ * @brief Clears the resource manager by destructing and reinitializing it.
+ *
+ * This function first calls the destructor on the given resource manager instance
+ * to release any allocated resources, and then reinitializes it to a clean state.
+ *
+ * @param this A reference to the resource manager to be cleared.
+ */
 void Clear(CFXResourceManagerRef this)
 {
     dtor(this);
     Init(this);
 }
 
-// static inline char* join(const char* s1, const char* s2) { return nullptr;}
 /**
- * loadShaderFromFile
- * 
- * @param vShaderFile path to vertex shader
- * @param fShaderFile path to fragment shader
- * @returns loaded, compiled and linked shader program
- * 
+ * @brief Loads a shader from vertex and fragment shader source files.
+ *
+ * This function reads the contents of the specified vertex and fragment shader files,
+ * then creates and returns a new shader object using those sources.
+ *
+ * @param this         Reference to the resource manager.
+ * @param vShaderFile  Path to the vertex shader source file.
+ * @param fShaderFile  Path to the fragment shader source file.
+ * @return             Reference to the created shader object.
  */
-
-
 CFXShaderRef LoadShaderFromFile(
     const CFXResourceManagerRef this,
     const GLchar* vShaderFile,
@@ -159,12 +198,16 @@ CFXShaderRef LoadShaderFromFile(
 }
 
 /**
- * loadTextureFromFile
- * 
- * @param file path to texture
- * @param alpha does the texture have an alpha channel?
- * @returns Texture
- * 
+ * @brief Loads a texture from a file and creates a CFXTexture2DRef object.
+ *
+ * This function loads an image file using stb_image, optionally with an alpha channel,
+ * and creates a texture object suitable for use with OpenGL. The image is flipped
+ * vertically during loading to match OpenGL's coordinate system.
+ *
+ * @param this      The resource manager reference (unused in this function).
+ * @param file      The path to the image file to load.
+ * @param alpha     GL_TRUE to load the image with an alpha channel (RGBA), GL_FALSE for RGB only.
+ * @return          A reference to the created CFXTexture2D object containing the loaded texture.
  */
 CFXTexture2DRef LoadTextureFromFile(
     const CFXResourceManagerRef this,
